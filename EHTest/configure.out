@@ -1,0 +1,2 @@
+running CONFIG_SHELL=/bin/bash /bin/bash ./configure --no-create --no-recursion
+configure: creating ./config.status
