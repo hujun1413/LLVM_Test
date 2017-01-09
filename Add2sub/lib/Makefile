@@ -8,6 +8,6 @@ LEVEL=..
 #
 # List all of the subdirectories that we will compile.
 #
-DIRS=RecordInst
+DIRS=Add2sub
 
 include $(LEVEL)/Makefile.common

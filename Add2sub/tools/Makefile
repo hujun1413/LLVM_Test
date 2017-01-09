@@ -8,6 +8,6 @@ LEVEL=..
 #
 # List all of the subdirectories that we will compile.
 #
-DIRS=GetInst
+DIRS=Add2sub
 
 include $(LEVEL)/Makefile.common

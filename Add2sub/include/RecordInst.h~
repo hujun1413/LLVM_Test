@@ -29,6 +29,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include "llvm/Support/InstIterator.h"
 
 using namespace llvm;
 using namespace std;
