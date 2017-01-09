@@ -322,7 +322,7 @@ Copyright (C) 2006 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/hujun/LLVM3.2/llvm-3.2.src/projects/sample'
+ac_pwd='/home/hujun/LLVM3.2/llvm-3.2.src/projects/my_sample'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 # If no file are specified by the user, then we need to provide default
@@ -499,7 +499,7 @@ s,@psdir@,|#_!!_#|${docdir},g
 s,@libdir@,|#_!!_#|${exec_prefix}/lib,g
 s,@localedir@,|#_!!_#|${datarootdir}/locale,g
 s,@mandir@,|#_!!_#|${datarootdir}/man,g
-s,@DEFS@,|#_!!_#|-DPACKAGE_NAME=\\"\\[SAMPLE\\]\\" -DPACKAGE_TARNAME=\\"--sample--\\" -DPACKAGE_VERSION=\\"\\[x.xx\\]\\" -DPACKAGE_STRING=\\"\\[SAMPLE\\]\\ \\[x.xx\\]\\" -DPACKAGE_BUGREPORT=\\"bugs@|#_!!_#|yourdomain\\" -DLLVM_ON_UNIX=1 -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DENABLE_THREADS=1 -DENABLE_PIC=1 -DENABLE_TIMESTAMPS=1 -DLLVM_NATIVE_ARCH=X86 -DLLVM_NATIVE_TARGET=LLVMInitializeX86Target -DLLVM_NATIVE_TARGETINFO=LLVMInitializeX86TargetInfo -DLLVM_NATIVE_TARGETMC=LLVMInitializeX86TargetMC -DLLVM_NATIVE_ASMPRINTER=LLVMInitializeX86AsmPrinter -DCLANG_RESOURCE_DIR=\\"\\" -DC_INCLUDE_DIRS=\\"\\" -DGCC_INSTALL_PREFIX=\\"\\" -DBUG_REPORT_URL=\\"http://llvm.org/bugs/\\" -DHOST_LINK_VERSION=\\"2.24\\" -DHAVE_LINK_R=1 -DHAVE_LINK_EXPORT_DYNAMIC=1 -DHAVE_DIRENT_H=1 -DHAVE_DLFCN_H=1 -DLTDL_SHLIB_EXT=\\".so\\" -DLTDL_SHLIBPATH_VAR=\\"LD_LIBRARY_PATH\\" -DLTDL_SYSSEARCHPATH=\\"/lib:/usr/lib:/usr/lib/i386-linux-gnu/libfakeroot:/usr/lib/i386-linux-gnu/mesa-egl:/usr/lib/i386-linux-gnu/mesa:/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/lib/i686-linux-gnu:/usr/lib/i686-linux-gnu:/usr/local/lib\\" -DLTDL_OBJDIR=\\".libs/\\" -DHAVE_PRELOADED_SYMBOLS=1 -DHAVE_LIBDL=1 -DHAVE_DLERROR=1 -DHAVE_ARGZ_H=1 -DHAVE_ERROR_T=1 -DHAVE_ARGZ_APPEND=1 -DHAVE_ARGZ_CREATE_SEP=1 -DHAVE_ARGZ_INSERT=1 -DHAVE_ARGZ_NEXT=1 -DHAVE_ARGZ_STRINGIFY=1 -DHAVE_ASSERT_H=1 -DHAVE_CTYPE_H=1 -DHAVE_ERRNO_H=1 -DHAVE_MALLOC_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STDIO_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STRING_H=1 -DHAVE_STRCHR=1 -DHAVE_STRRCHR=1 -DHAVE_MEMCPY=1 -DHAVE_MEMMOVE=1 -DHAVE_STRCMP=1 -DHAVE_CLOSEDIR=1 -DHAVE_OPENDIR=1 -DHAVE_READDIR=1 -DHAVE_LIBM=1 -DHAVE_DLOPEN=1 -DHAVE_MALLINFO=1 -DHAVE_LIBPTHREAD=1 -DHAVE_PTHREAD_MUTEX_LOCK=1 -DHAVE_PTHREAD_RWLOCK_INIT=1 -DHAVE_PTHREAD_GETSPECIFIC=1 -DUSE_UDIS86=0 -DUSE_OPROFILE=0 -DHAVE_DIRENT_H=1 -DHAVE_MMAP_ANONYMOUS=1 -DHAVE_SYS_WAIT_H=1 -DTIME_WITH_SYS_TIME=1 -DHAVE_DLFCN_H=1 -DHAVE_EXECINFO_H=1 -DHAVE_FCNTL_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_LIMITS_H=1 -DHAVE_LINK_H=1 -DHAVE_MALLOC_H=1 -DHAVE_SETJMP_H=1 -DHAVE_SIGNAL_H=1 -DHAVE_STDINT_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_UNISTD_H=1 -DHAVE_UTIME_H=1 -DHAVE_SYS_MMAN_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_UIO_H=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_FENV_H=1 -DHAVE_PTHREAD_H=1 -DHAVE_CRASHREPORTER_INFO=0 -DRETSIGTYPE=void -DHAVE_INT64_T=1 -DHAVE_UINT64_T=1 -DHAVE_BACKTRACE=1 -DHAVE_CEILF=1 -DHAVE_FLOORF=1 -DHAVE_ROUNDF=1 -DHAVE_RINTF=1 -DHAVE_NEARBYINTF=1 -DHAVE_GETCWD=1 -DHAVE_POWF=1 -DHAVE_FMODF=1 -DHAVE_STRTOF=1 -DHAVE_ROUND=1 -DHAVE_GETPAGESIZE=1 -DHAVE_GETRUSAGE=1 -DHAVE_GETRLIMIT=1 -DHAVE_SETRLIMIT=1 -DHAVE_GETTIMEOFDAY=1 -DHAVE_ISATTY=1 -DHAVE_MKDTEMP=1 -DHAVE_MKSTEMP=1 -DHAVE_MKTEMP=1 -DHAVE_POSIX_SPAWN=1 -DHAVE_REALPATH=1 -DHAVE_SBRK=1 -DHAVE_SETRLIMIT=1 -DHAVE_STRDUP=1 -DHAVE_STRERROR=1 -DHAVE_STRERROR_R=1 -DHAVE_SETENV=1 -DHAVE_STRTOLL=1 -DHAVE_STRTOQ=1 -DHAVE_SYSCONF=1 -DHAVE_SETJMP=1 -DHAVE_LONGJMP=1 -DHAVE_SIGLONGJMP=1 -DHAVE_WRITEV=1 -DHAVE_PRINTF_A=1 -DHAVE_RAND48=1 -DHAVE_DECL_STRERROR_S=0 -DHAVE_ISNAN_IN_MATH_H=1 -DHAVE_ISNAN_IN_CMATH=1 -DHAVE_STD_ISNAN_IN_CMATH=1 -DHAVE_ISINF_IN_MATH_H=1 -DHAVE_ISINF_IN_CMATH=1 -DHAVE_STD_ISINF_IN_CMATH=1 -DHAVE_STDLIB_H=1 -DHAVE_UNISTD_H=1 -DHAVE_GETPAGESIZE=1 -DHAVE_MMAP=1 -DHAVE_MMAP_FILE= -DLLVM_HAS_ATOMICS=1 -DHAVE___DSO_HANDLE=1 -DLLVM_PREFIX=\\"/usr/local\\" -DLLVM_BINDIR=\\"/usr/local/bin\\" -DLLVM_LIBDIR=\\"/usr/local/lib\\" -DLLVM_DATADIR=\\"/usr/local/share/llvm\\" -DLLVM_DOCSDIR=\\"/usr/local/share/doc/llvm\\" -DLLVM_ETCDIR=\\"/usr/local/etc/llvm\\" -DLLVM_INCLUDEDIR=\\"/usr/local/include\\" -DLLVM_INFODIR=\\"/usr/local/info\\" -DLLVM_MANDIR=\\"/usr/local/man\\" -DLLVM_CONFIGTIME=\\"Tue\\ Dec\\ \\ 6\\ 14:28:14\\ CST\\ 2016\\" -DLLVM_DEFAULT_TARGET_TRIPLE=\\"i686-pc-linux-gnu\\",g
+s,@DEFS@,|#_!!_#|-DPACKAGE_NAME=\\"\\[SAMPLE\\]\\" -DPACKAGE_TARNAME=\\"--sample--\\" -DPACKAGE_VERSION=\\"\\[x.xx\\]\\" -DPACKAGE_STRING=\\"\\[SAMPLE\\]\\ \\[x.xx\\]\\" -DPACKAGE_BUGREPORT=\\"bugs@|#_!!_#|yourdomain\\" -DLLVM_ON_UNIX=1 -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DENABLE_THREADS=1 -DENABLE_PIC=1 -DENABLE_TIMESTAMPS=1 -DLLVM_NATIVE_ARCH=X86 -DLLVM_NATIVE_TARGET=LLVMInitializeX86Target -DLLVM_NATIVE_TARGETINFO=LLVMInitializeX86TargetInfo -DLLVM_NATIVE_TARGETMC=LLVMInitializeX86TargetMC -DLLVM_NATIVE_ASMPRINTER=LLVMInitializeX86AsmPrinter -DCLANG_RESOURCE_DIR=\\"\\" -DC_INCLUDE_DIRS=\\"\\" -DGCC_INSTALL_PREFIX=\\"\\" -DBUG_REPORT_URL=\\"http://llvm.org/bugs/\\" -DHAVE_DOT=1 -DLLVM_PATH_DOT=\\"/usr/bin/dot\\" -DHAVE_FDP=1 -DLLVM_PATH_FDP=\\"/usr/bin/fdp\\" -DHAVE_NEATO=1 -DLLVM_PATH_NEATO=\\"/usr/bin/neato\\" -DHAVE_TWOPI=1 -DLLVM_PATH_TWOPI=\\"/usr/bin/twopi\\" -DHAVE_CIRCO=1 -DLLVM_PATH_CIRCO=\\"/usr/bin/circo\\" -DHAVE_DOTTY=1 -DLLVM_PATH_DOTTY=\\"/usr/bin/dotty\\" -DHOST_LINK_VERSION=\\"2.24\\" -DHAVE_LINK_R=1 -DHAVE_LINK_EXPORT_DYNAMIC=1 -DHAVE_DIRENT_H=1 -DHAVE_DLFCN_H=1 -DLTDL_SHLIB_EXT=\\".so\\" -DLTDL_SHLIBPATH_VAR=\\"LD_LIBRARY_PATH\\" -DLTDL_SYSSEARCHPATH=\\"/lib:/usr/lib:/usr/lib/x86_64-linux-gnu/libfakeroot:/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/lib/i686-linux-gnu:/usr/lib/i686-linux-gnu:/usr/local/lib:/usr/lib/vmware-tools/lib32/libvmGuestLib.so:/usr/lib/vmware-tools/lib64/libvmGuestLib.so:/usr/lib/vmware-tools/lib32/libvmGuestLibJava.so:/usr/lib/vmware-tools/lib64/libvmGuestLibJava.so:/usr/lib/vmware-tools/lib32/libDeployPkg.so:/usr/lib/vmware-tools/lib64/libDeployPkg.so:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu/mesa-egl:/usr/lib/x86_64-linux-gnu/mesa\\" -DLTDL_OBJDIR=\\".libs/\\" -DHAVE_PRELOADED_SYMBOLS=1 -DHAVE_LIBDL=1 -DHAVE_DLERROR=1 -DHAVE_ARGZ_H=1 -DHAVE_ERROR_T=1 -DHAVE_ARGZ_APPEND=1 -DHAVE_ARGZ_CREATE_SEP=1 -DHAVE_ARGZ_INSERT=1 -DHAVE_ARGZ_NEXT=1 -DHAVE_ARGZ_STRINGIFY=1 -DHAVE_ASSERT_H=1 -DHAVE_CTYPE_H=1 -DHAVE_ERRNO_H=1 -DHAVE_MALLOC_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STDIO_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STRING_H=1 -DHAVE_STRCHR=1 -DHAVE_STRRCHR=1 -DHAVE_MEMCPY=1 -DHAVE_MEMMOVE=1 -DHAVE_STRCMP=1 -DHAVE_CLOSEDIR=1 -DHAVE_OPENDIR=1 -DHAVE_READDIR=1 -DHAVE_LIBM=1 -DHAVE_DLOPEN=1 -DHAVE_MALLINFO=1 -DHAVE_LIBPTHREAD=1 -DHAVE_PTHREAD_MUTEX_LOCK=1 -DHAVE_PTHREAD_RWLOCK_INIT=1 -DHAVE_PTHREAD_GETSPECIFIC=1 -DUSE_UDIS86=0 -DUSE_OPROFILE=0 -DHAVE_DIRENT_H=1 -DHAVE_MMAP_ANONYMOUS=1 -DHAVE_SYS_WAIT_H=1 -DTIME_WITH_SYS_TIME=1 -DHAVE_DLFCN_H=1 -DHAVE_EXECINFO_H=1 -DHAVE_FCNTL_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_LIMITS_H=1 -DHAVE_LINK_H=1 -DHAVE_MALLOC_H=1 -DHAVE_SETJMP_H=1 -DHAVE_SIGNAL_H=1 -DHAVE_STDINT_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_UNISTD_H=1 -DHAVE_UTIME_H=1 -DHAVE_SYS_MMAN_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_SYS_RESOURCE_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_UIO_H=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_FENV_H=1 -DHAVE_PTHREAD_H=1 -DHAVE_CRASHREPORTER_INFO=0 -DRETSIGTYPE=void -DHAVE_INT64_T=1 -DHAVE_UINT64_T=1 -DHAVE_BACKTRACE=1 -DHAVE_CEILF=1 -DHAVE_FLOORF=1 -DHAVE_ROUNDF=1 -DHAVE_RINTF=1 -DHAVE_NEARBYINTF=1 -DHAVE_GETCWD=1 -DHAVE_POWF=1 -DHAVE_FMODF=1 -DHAVE_STRTOF=1 -DHAVE_ROUND=1 -DHAVE_GETPAGESIZE=1 -DHAVE_GETRUSAGE=1 -DHAVE_GETRLIMIT=1 -DHAVE_SETRLIMIT=1 -DHAVE_GETTIMEOFDAY=1 -DHAVE_ISATTY=1 -DHAVE_MKDTEMP=1 -DHAVE_MKSTEMP=1 -DHAVE_MKTEMP=1 -DHAVE_POSIX_SPAWN=1 -DHAVE_REALPATH=1 -DHAVE_SBRK=1 -DHAVE_SETRLIMIT=1 -DHAVE_STRDUP=1 -DHAVE_STRERROR=1 -DHAVE_STRERROR_R=1 -DHAVE_SETENV=1 -DHAVE_STRTOLL=1 -DHAVE_STRTOQ=1 -DHAVE_SYSCONF=1 -DHAVE_SETJMP=1 -DHAVE_LONGJMP=1 -DHAVE_SIGLONGJMP=1 -DHAVE_WRITEV=1 -DHAVE_PRINTF_A=1 -DHAVE_RAND48=1 -DHAVE_DECL_STRERROR_S=0 -DHAVE_ISNAN_IN_MATH_H=1 -DHAVE_ISINF_IN_MATH_H=1 -DHAVE_STDLIB_H=1 -DHAVE_UNISTD_H=1 -DHAVE_GETPAGESIZE=1 -DHAVE_MMAP=1 -DHAVE_MMAP_FILE= -DLLVM_HAS_ATOMICS=1 -DHAVE___DSO_HANDLE=1 -DLLVM_PREFIX=\\"/usr/local\\" -DLLVM_BINDIR=\\"/usr/local/bin\\" -DLLVM_LIBDIR=\\"/usr/local/lib\\" -DLLVM_DATADIR=\\"/usr/local/share/llvm\\" -DLLVM_DOCSDIR=\\"/usr/local/share/doc/llvm\\" -DLLVM_ETCDIR=\\"/usr/local/etc/llvm\\" -DLLVM_INCLUDEDIR=\\"/usr/local/include\\" -DLLVM_INFODIR=\\"/usr/local/info\\" -DLLVM_MANDIR=\\"/usr/local/man\\" -DLLVM_CONFIGTIME=\\"Sat\\ Jan\\ \\ 7\\ 19:49:12\\ CST\\ 2017\\" -DLLVM_DEFAULT_TARGET_TRIPLE=\\"x86_64-unknown-linux-gnu\\",g
 s,@ECHO_C@,|#_!!_#|,g
 s,@ECHO_N@,|#_!!_#|-n,g
 s,@ECHO_T@,|#_!!_#|,g
@@ -509,32 +509,32 @@ s,@host_alias@,|#_!!_#|,g
 s,@target_alias@,|#_!!_#|,g
 s,@LLVM_SRC@,|#_!!_#|/home/hujun/LLVM3.2/llvm-3.2.src,g
 s,@LLVM_OBJ@,|#_!!_#|/home/hujun/LLVM3.2/llvm-3.2.src,g
-s,@LLVM_VERSION@,|#_!!_#|unknown,g
-s,@CC@,|#_!!_#|gcc,g
+s,@LLVM_VERSION@,|#_!!_#|3.2svn,g
+s,@CC@,|#_!!_#|clang,g
 s,@CFLAGS@,|#_!!_#|-g -O2,g
 s,@LDFLAGS@,|#_!!_#|,g
 s,@CPPFLAGS@,|#_!!_#|,g
-s,@ac_ct_CC@,|#_!!_#|gcc,g
+s,@ac_ct_CC@,|#_!!_#|clang,g
 s,@EXEEXT@,|#_!!_#|,g
 s,@OBJEXT@,|#_!!_#|o,g
-s,@CXX@,|#_!!_#|g++,g
+s,@CXX@,|#_!!_#|clang++,g
 s,@CXXFLAGS@,|#_!!_#|-g -O2,g
-s,@ac_ct_CXX@,|#_!!_#|g++,g
-s,@CPP@,|#_!!_#|gcc -E,g
+s,@ac_ct_CXX@,|#_!!_#|clang++,g
+s,@CPP@,|#_!!_#|clang -E,g
 s,@ENABLE_POLLY@,|#_!!_#|1,g
 s,@LLVM_HAS_POLLY@,|#_!!_#|,g
 s,@subdirs@,|#_!!_#|,g
-s,@build@,|#_!!_#|i686-pc-linux-gnu,g
-s,@build_cpu@,|#_!!_#|i686,g
-s,@build_vendor@,|#_!!_#|pc,g
+s,@build@,|#_!!_#|x86_64-unknown-linux-gnu,g
+s,@build_cpu@,|#_!!_#|x86_64,g
+s,@build_vendor@,|#_!!_#|unknown,g
 s,@build_os@,|#_!!_#|linux-gnu,g
-s,@host@,|#_!!_#|i686-pc-linux-gnu,g
-s,@host_cpu@,|#_!!_#|i686,g
-s,@host_vendor@,|#_!!_#|pc,g
+s,@host@,|#_!!_#|x86_64-unknown-linux-gnu,g
+s,@host_cpu@,|#_!!_#|x86_64,g
+s,@host_vendor@,|#_!!_#|unknown,g
 s,@host_os@,|#_!!_#|linux-gnu,g
-s,@target@,|#_!!_#|i686-pc-linux-gnu,g
-s,@target_cpu@,|#_!!_#|i686,g
-s,@target_vendor@,|#_!!_#|pc,g
+s,@target@,|#_!!_#|x86_64-unknown-linux-gnu,g
+s,@target_cpu@,|#_!!_#|x86_64,g
+s,@target_vendor@,|#_!!_#|unknown,g
 s,@target_os@,|#_!!_#|linux-gnu,g
 s,@OS@,|#_!!_#|Linux,g
 s,@HOST_OS@,|#_!!_#|Linux,g
@@ -543,7 +543,7 @@ s,@LINKALL@,|#_!!_#|-Wl\,--whole-archive,g
 s,@NOLINKALL@,|#_!!_#|-Wl\,--no-whole-archive,g
 s,@LLVM_ON_UNIX@,|#_!!_#|1,g
 s,@LLVM_ON_WIN32@,|#_!!_#|0,g
-s,@ARCH@,|#_!!_#|x86,g
+s,@ARCH@,|#_!!_#|x86_64,g
 s,@ENDIAN@,|#_!!_#|little,g
 s,@GREP@,|#_!!_#|/bin/grep,g
 s,@EGREP@,|#_!!_#|/bin/grep -E,g
@@ -598,13 +598,13 @@ s,@SED@,|#_!!_#|/bin/sed,g
 s,@TAR@,|#_!!_#|/bin/tar,g
 s,@BINPWD@,|#_!!_#|/bin/pwd,g
 s,@GRAPHVIZ@,|#_!!_#|echo Graphviz,g
-s,@DOT@,|#_!!_#|echo dot,g
-s,@FDP@,|#_!!_#|echo fdp,g
-s,@NEATO@,|#_!!_#|echo neato,g
-s,@TWOPI@,|#_!!_#|echo twopi,g
-s,@CIRCO@,|#_!!_#|echo circo,g
+s,@DOT@,|#_!!_#|/usr/bin/dot,g
+s,@FDP@,|#_!!_#|/usr/bin/fdp,g
+s,@NEATO@,|#_!!_#|/usr/bin/neato,g
+s,@TWOPI@,|#_!!_#|/usr/bin/twopi,g
+s,@CIRCO@,|#_!!_#|/usr/bin/circo,g
 s,@GV@,|#_!!_#|echo gv,g
-s,@DOTTY@,|#_!!_#|echo dotty,g
+s,@DOTTY@,|#_!!_#|/usr/bin/dotty,g
 s,@XDOT_PY@,|#_!!_#|echo xdot.py,g
 s,@INSTALL_PROGRAM@,|#_!!_#|${INSTALL},g
 s,@INSTALL_SCRIPT@,|#_!!_#|${INSTALL},g
@@ -633,7 +633,7 @@ s,@CONVENIENCE_LTDL_FALSE@,|#_!!_#|,g
 s,@LIBADD_DL@,|#_!!_#|-ldl,g
 s,@NO_VARIADIC_MACROS@,|#_!!_#|-Wno-variadic-macros,g
 s,@NO_MISSING_FIELD_INITIALIZERS@,|#_!!_#|-Wno-missing-field-initializers,g
-s,@COVERED_SWITCH_DEFAULT@,|#_!!_#|,g
+s,@COVERED_SWITCH_DEFAULT@,|#_!!_#|-Wcovered-switch-default,g
 s,@USE_UDIS86@,|#_!!_#|0,g
 s,@USE_OPROFILE@,|#_!!_#|0,g
 s,@HAVE_PTHREAD@,|#_!!_#|1,g
@@ -650,7 +650,7 @@ s,@LLVM_ETCDIR@,|#_!!_#|/usr/local/etc/llvm,g
 s,@LLVM_INCLUDEDIR@,|#_!!_#|/usr/local/include,g
 s,@LLVM_INFODIR@,|#_!!_#|/usr/local/info,g
 s,@LLVM_MANDIR@,|#_!!_#|/usr/local/man,g
-s,@LLVM_CONFIGTIME@,|#_!!_#|Tue Dec  6 14:28:14 CST 2016,g
+s,@LLVM_CONFIGTIME@,|#_!!_#|Sat Jan  7 19:49:12 CST 2017,g
 s,@BINDINGS_TO_BUILD@,|#_!!_#|,g
 s,@ALL_BINDINGS@,|#_!!_#|ocaml,g
 s,@OCAML_LIBDIR@,|#_!!_#|,g
