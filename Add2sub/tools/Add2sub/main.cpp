@@ -2,7 +2,7 @@
 
 int main(int argc, char** argv)  
 {  
-InitializeNativeTarget();
+	InitializeNativeTarget();
 	LLVMContext &Context = getGlobalContext();
   
 	// Load the bitcode...	

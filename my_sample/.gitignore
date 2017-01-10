@@ -1,7 +1,2 @@
 *~
-autoconf/
-docs/
 Release*/
-config*
-install*
-Makefile
