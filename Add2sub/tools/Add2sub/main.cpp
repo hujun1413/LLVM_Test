@@ -2,7 +2,8 @@
 
 int main(int argc, char** argv)  
 {  
-	InitializeNativeTarget();
+	InitializeNativeTarget();     //The main program should call this function to initialize the native target corresponding to the host.
+								  //This is useful for JIT applications to ensure that the target gets linked in correctly.
 	LLVMContext &Context = getGlobalContext();
   
 	// Load the bitcode...	

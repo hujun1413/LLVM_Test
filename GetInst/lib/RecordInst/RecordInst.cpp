@@ -31,7 +31,7 @@ Function* RecordInfo(Module *mod)
 	return func;
 }
 
-//Insert record function，在基本块的第一条指令处插入一条function call
+//Insert record function，在基本块的第一条指令处插入一条RecordInfo的function call
 void CreateRecord(BasicBlock *MyBB, int FnNum, int BBNum, Module *mod)
 {
 
@@ -61,6 +61,7 @@ void CreateRecord(BasicBlock *MyBB, int FnNum, int BBNum, Module *mod)
 	mycall = CallInst::Create(func_rec, para, "", MyIn); //CallInst represents a function call，在MyIn之前插入一条名字为“”，参数为para的函数func_rec
 	mycall->setCallingConv(CallingConv::C);
 	mycall->setTailCall(false);   //不设置尾递归
+	//outs() << *mycall->getType() << "\n";   //被调用函数的返回值是void
 }
 
 //Handle function information
@@ -98,6 +99,7 @@ void PrintInfo(int option, Module* mod)
 	if (!fp_read || !fp_write)
 	{
 		outs() << "Fail to open file!\n";
+		return;
 	}
 
 	if (!(option == 0 || option == 1))
@@ -139,15 +141,15 @@ void PrintInfo(int option, Module* mod)
 		{
 			BasicBlock::iterator it_BB;    //typedef InstListType::iterator llvm::BasicBlock::iterator
 
-			for (it_BB = MyBB->begin(); it_BB != MyBB->end(); it_BB++)   //由basicBLock的iterator获取function的iterator
+			for (it_BB = MyBB->begin(); it_BB != MyBB->end(); it_BB++)   //打印原始的basicBlock
 			{
 				string str;
 				raw_string_ostream stream(str);
 				Instruction *MyIn = &(*it_BB);    //由function的iterator获取Instruction
 				stream << *MyIn;
-				if (stream.str().find("MyRecord") != string::npos)
+				if (stream.str().find("MyRecord") != string::npos)  //找到MyRecord这条指令,跳过不输出
 					continue;
-				fprintf(fp_write, "\t\t%s\n", stream.str().c_str());  //找到MyRecord这条指令
+				fprintf(fp_write, "\t\t%s\n", stream.str().c_str());  
 			}
 		}
 	}
