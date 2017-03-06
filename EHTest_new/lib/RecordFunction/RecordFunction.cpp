@@ -20,7 +20,7 @@ int func_num = 0;
 char g_entry_func[100];
 char g_exit_func[100];
 
-//Declare the extern function of MyValueChange	 	 	 
+//Declare the extern function of MyValueChange	 	 	 void MyCountChange(void);
 Function *CountChangeInfo(Module *mod)	 	 	 
 {	 	 	 
     std::vector<Type*>FuncTy_args;	 	 	 
@@ -41,7 +41,7 @@ Function *CountChangeInfo(Module *mod)
 	return func;	 	 	 
 }	 	 	 
  	 	 	 
-//Declare the extern function of MyResCheck	 	 	 
+//Declare the extern function of MyResCheck	 	 	 void MyResCheck(void);
 Function *ResCheckInfo(Module *mod)	 	 	 
 {	 	 	 
 	std::vector<Type*>FuncTy_args;	 	 	 
@@ -62,7 +62,7 @@ Function *ResCheckInfo(Module *mod)
 return func;	 	 	 
 }	 	 	 
  	 	 	 
-//Declare the extern function of MyPassFunc	 	 	 
+//Declare the extern function of MyPassFunc	 	 	 int32 MyPassFunc(char* , char* );
 Function* PassFuncInfo(Module *mod)	 	 	 
 {	 	 	 
     //Initialize paramater's type	 	 	 
@@ -87,7 +87,7 @@ Function* PassFuncInfo(Module *mod)
     return func;	 	 	 
 }
 
-//Declare the extern function of MyRecFunc	 	
+//Declare the extern function of MyRecFunc	 	    void MyRecFunc(char* , char* , char* );
 Function* RecFuncInfo(Module *mod)	 	
 {	 	
 	//Initialize paramater's type	 	
@@ -113,7 +113,7 @@ Function* RecFuncInfo(Module *mod)
     return func;	 	 	 
 }
 
-//Declare the extern function of MyFuncEnter
+//Declare the extern function of MyFuncEnter            void MyFuncEnter(char* );
 Function *FuncEnterInfo(Module *mod) 
 {
 	//Initialize paramater's type
@@ -137,7 +137,7 @@ Function *FuncEnterInfo(Module *mod)
 	return func;
 }
 
-//Declare the extern function of MyFuncExit
+//Declare the extern function of MyFuncExit     void MyFuncExit(char* );
 Function *FuncExitInfo(Module *mod) 
 {
 	//Initialize paramater's type
@@ -197,7 +197,7 @@ Constant *CreateWords(Module *mod, string str)
 	return const_ptr;
 }
 
-//Insert count value change function	<>	 	 
+//Insert count value change function			 	 在函数的第一条语句前，调用void MyCountChange(void);
 void CreateCountChange(Function *MyFn, Module *mod)	 	 	 
 {	 	 	 
     Instruction *first_inst = (MyFn->getEntryBlock()).getFirstNonPHI();	 	 	 
@@ -239,8 +239,8 @@ void CreateResCheck(Function *MyFn, Module *mod)
 }	 	 	 
 */	 	 	 
  	 	 	 
-//Insert function enter and exit log
-void CreateFuncEnterExit(Function *MyFn, Module *mod) 
+//Insert function enter and exit log                 在函数的第一条语句前，调用void MyFuncEnter(char* 函数名);
+void CreateFuncEnterExit(Function *MyFn, Module *mod)     //在函数的return语句前，调用void MyFuncExit(char* 函数名);
 {
     int flag = 0;	 	 	 
     Constant *func_name = CreateWords(mod, MyFn->getName().str());	 	 	 
@@ -270,7 +270,7 @@ void CreateFuncEnterExit(Function *MyFn, Module *mod)
 
 			if (OpCode == Instruction::Ret) 
 			{
-				//Call MyResCheck function before the return instruction
+				//Call MyFuncExit function before the return instruction
 				CallInst *mycall;
 				mycall = CallInst::Create(func_exit, para, "", MyIn);
 				mycall->setCallingConv(CallingConv::C);
@@ -281,7 +281,7 @@ void CreateFuncEnterExit(Function *MyFn, Module *mod)
 	}
 }
 
-//Insert pass function	 	 	 
+//Insert pass function	 	 	 在调用语句之前，调用int32 MyPassFunc(char* 被调用者, char* 调用者);
 CallInst *CreatePass(CallInst *func, Function *caller, Module *mod)	 	 	 
 {	 	 	 
     Function *myfunc = func->getCalledFunction();	 	 	 
@@ -302,6 +302,7 @@ CallInst *CreatePass(CallInst *func, Function *caller, Module *mod)
 }
 
 //Record functions returning pointers or integers
+//当CallInst *func返回指针或者整数时，在MyIn之前插入call void func_record(called_name, caller_name, ret_type)
 void CreateRecFunc(CallInst *func, Function *caller, Instruction *MyIn, Module *mod)
 {
 	Type *retType = func->getType();
@@ -381,7 +382,7 @@ void LogFunction(Module *mod)
 					//Handle each function call
 					it_BB ++;
 					Instruction *MyTemp = &(*it_BB);	
-					CreateRecFunc(mycall, MyFn, MyTemp, mod);
+					CreateRecFunc(mycall, MyFn, MyTemp, mod);  //当mycall返回指针或者整数时，在MyIn（调用语句）之后插入call void func_record(called_name, caller_name, ret_type)
 					it_BB --;
 				}
 			}	
