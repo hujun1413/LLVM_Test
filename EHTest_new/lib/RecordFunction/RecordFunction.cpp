@@ -257,6 +257,8 @@ void CreateFuncEnterExit(Function *MyFn, Module *mod)     //在函数的return�
 		for (BasicBlock::iterator it_BB = MyBB->begin(); it_BB != MyBB->end(); it_BB++)
 		{
 			Instruction *MyIn = &(*it_BB);
+			//outs() << *it_BB << "\n";
+			//outs() << "OpCode = " << MyIn->getOpcode() << "\n";
 			unsigned OpCode = MyIn->getOpcode();
  			//Call MyFuncEnter function berfore the first instruction of the caller
 			if (flag == 0) {
@@ -265,7 +267,7 @@ void CreateFuncEnterExit(Function *MyFn, Module *mod)     //在函数的return�
 				mycall->setCallingConv(CallingConv::C);
 				mycall->setTailCall(false);	
 				flag = 1;
-				break;
+				//break;
 			}
 
 			if (OpCode == Instruction::Ret) 
@@ -275,7 +277,7 @@ void CreateFuncEnterExit(Function *MyFn, Module *mod)     //在函数的return�
 				mycall = CallInst::Create(func_exit, para, "", MyIn);
 				mycall->setCallingConv(CallingConv::C);
 				mycall->setTailCall(false);	
-				break;
+				//break;
 			}
 		}
 	}
