@@ -70,7 +70,8 @@ Function* PassFuncInfo(Module *mod)
     IntegerType *IntTy32 = IntegerType::get(mod->getContext(), 32);	 	 	 
     std::vector<Type*>FuncTy_args;	 	 	 
     FuncTy_args.push_back(PointerChar);	 	 	 
-    FuncTy_args.push_back(PointerChar);	 	 	 
+    FuncTy_args.push_back(IntTy32);	 
+    FuncTy_args.push_back(IntTy32);	 	 	 
     FunctionType* FuncTy = FunctionType::get(IntTy32, FuncTy_args, false);	 	 	 
  	 	 	 
     //Create a function declaration	 	 	 
@@ -283,21 +284,23 @@ void CreateFuncEnterExit(Function *MyFn, Module *mod)     //在函数的return�
 	}
 }
 
-//Insert pass function	 	 	 在调用语句之前，调用int32 MyPassFunc(char* 被调用者, char* 调用者);
-CallInst *CreatePass(CallInst *func, Function *caller, Module *mod)	 	 	 
+//Insert pass function	 	 	 在赋值之前，调用int32 MyPassFunc(char* 被调用者, char* 调用者);
+CallInst *CreatePass(Instruction *valInst, char *func, int line, int fault, Module *mod)	 	 	 
 {	 	 	 
-    Function *myfunc = func->getCalledFunction();	 	 	 
-    Constant *func_name = CreateWords(mod, myfunc->getName().str());	 	 	 
-    Constant *caller_name = CreateWords(mod, caller->getName().str());	 	 	 
+	string str(func);
+    Constant *func_name = CreateWords(mod, str);	
+    ConstantInt* const_line = ConstantInt::get(mod->getContext(), APInt(32, line)); 	
+    ConstantInt* const_fault = ConstantInt::get(mod->getContext(), APInt(32, fault)); 	 	 
  	 	 	 
     //Prepare parameters for MyPassFunc	 	 	 
     std::vector<Value*> para;	 	 	 
     para.push_back(func_name);	 	 	 
-    para.push_back(caller_name);	 	 	 
+    para.push_back(const_line);	
+    para.push_back(const_fault);	 	 	 
  	 	 	 
     //Call MyPassFunc function	 	 	 
     CallInst *mycall;	 	 	 
-    mycall = CallInst::Create(func_pass, para, "", func);	 	 	 
+    mycall = CallInst::Create(func_pass, para, "", valInst);	 	 	 
     mycall->setCallingConv(CallingConv::C);	 	 	 
     mycall->setTailCall(false);	 	 	 
     return mycall;	 	 	 
@@ -714,7 +717,7 @@ bool ReadFuncFile(char *file)
 {	
     FILE *fp;	
     char func[100];	 	 	 
-    char caller[100];	 	 	 
+    int line, fault;	 	 	 
  	 	 	 
     fp = fopen(file, "r");	 	 	 
     if (!fp)	 	 	 
@@ -724,10 +727,11 @@ bool ReadFuncFile(char *file)
     }	 	 	 
  	
     func_num = 0;	
-    while (fscanf(fp, "%s%s", func, caller) != EOF)	 	 	 
+    while (fscanf(fp, "%s%d%d", func, &line, &fault) != EOF)	 	 	 
     {	 	 	 
         strcpy(myfunc[func_num].func, func);	 	 	 
-        strcpy(myfunc[func_num].caller, caller);	 	 	 
+        myfunc[func_num].line = line;
+        myfunc[func_num].fault = fault;	 	 	 
         func_num ++;	 	 	 
     }	 	 	 
     fclose(fp);	 	 	 
@@ -750,7 +754,7 @@ bool ReadFuncFile(char *file)
 }*/	 	 	 
  	 	 	 
 //Inject fault into a single target function
-void InjectSingleFault(Module *mod, char *name, char *caller) {
+void InjectSingleFault(Module *mod, char *func, int line, int fault) {
 	for (Module::iterator it_MM = mod->begin(); it_MM != mod->end(); it_MM++)
 	{
 		Function *MyFn = &(*it_MM);
@@ -773,7 +777,7 @@ void InjectSingleFault(Module *mod, char *name, char *caller) {
 		if (attr_flag == true)
 			continue;
 
-		if (strcmp(caller_name, caller))	 
+		if (strcmp(caller_name, func))	 
             continue;
 
 		for (Function::iterator it_Fn = MyFn->begin(); it_Fn != MyFn->end(); it_Fn++)
@@ -785,23 +789,86 @@ void InjectSingleFault(Module *mod, char *name, char *caller) {
 				//outs() << *MyIn << "\n";
 
 				unsigned OpCode = MyIn->getOpcode();
-				if (OpCode == Instruction::Call)
+				if(OpCode == Instruction::ICmp)    //是if判断
 				{
-					//Get called function's handle
-					CallInst *mycall = cast <CallInst> (MyIn);
-					Function *myfunc = mycall->getCalledFunction();
-
-					if (!myfunc)
-						continue;
-
-					//If the function and its caller are matched
-					char mystr[100];
-					strcpy(mystr, myfunc->getName().str().c_str());
-					if (strcmp(mystr, name) == 0)
+					if (MDNode *N = MyIn->getMetadata("dbg")) 
 					{
-						InsertChange(mycall, MyFn, mod);		 
-                        it_Fn++; it_Fn++;	 	 	 
-                        break;
+						DILocation Loc(N);//DILocation is in DebugInfo.h
+						unsigned Line = Loc.getLineNumber();
+						if(Line == line)    //在某行
+						{
+							ICmpInst *mycmp = cast <ICmpInst> (MyIn);
+							Value *val1 = mycmp->getOperand(0);
+							Value *val2 = mycmp->getOperand(1);		 	 
+				 	 	
+							//Compare with constant int or null pointer	 	 	 
+							if (val2->getValueID() == Value::ConstantIntVal)	 	 	 
+							{	
+								if (Instruction* inst = dyn_cast<Instruction>(val1)) 
+								{
+									unsigned OpCode = inst->getOpcode();
+									if(OpCode == Instruction::And)
+									{
+										if(inst->getOperand(1)->getValueID() == Value::ConstantIntVal)
+										{
+											outs() << "变量1=" << *inst->getOperand(0) << *(inst->getOperand(0)->getType()) << "\n";
+											outs() << "错误类型值2=" << *inst->getOperand(1) << "\n";
+											if (Instruction* valInst = dyn_cast<Instruction>(inst->getOperand(0))) 
+											{
+												InsertChange(valInst, MyFn, func, line, fault, mod);
+												return;
+											}
+										}
+										else if(inst->getOperand(0)->getValueID() == Value::ConstantIntVal)
+										{
+											outs() << "变量2=" << *inst->getOperand(1) << "\n";
+											outs() << "错误类型值2=" << *inst->getOperand(0) << "\n";
+											if (Instruction* valInst = dyn_cast<Instruction>(inst->getOperand(1))) 
+											{
+												InsertChange(valInst, MyFn, func, line, fault, mod);
+												return;
+											}
+										}
+									}
+								}
+								
+							}
+							else if(val1->getValueID() == Value::ConstantIntVal)
+							{
+								if (Instruction* inst = dyn_cast<Instruction>(val2)) 
+								{
+									unsigned OpCode = inst->getOpcode();
+									if(OpCode == Instruction::And)
+									{
+										if(inst->getOperand(1)->getValueID() == Value::ConstantIntVal)
+										{
+											outs() << "变量3=" << *inst->getOperand(0) << "\n";
+											outs() << "错误类型值3=" << *inst->getOperand(1) << "\n";
+											if (LoadInst* valInst = dyn_cast<LoadInst>(inst->getOperand(0))) 
+											{
+												if(Instruction* valInst1 = dyn_cast<Instruction>(valInst->getOperand(0)))
+												{
+													outs() << "变量1=" << *valInst1 << "    " << *valInst1->getType() << "\n";
+													InsertChange(valInst1, MyFn, func, line, fault, mod);
+													return;
+												}
+												
+											}
+										}
+										else if(inst->getOperand(0)->getValueID() == Value::ConstantIntVal)
+										{
+											outs() << "变量4=" << *inst->getOperand(1) << "\n";
+											outs() << "错误类型值4=" << *inst->getOperand(0) << "\n";
+											if (Instruction* valInst = dyn_cast<Instruction>(inst->getOperand(1))) 
+											{
+												InsertChange(valInst, MyFn, func, line, fault, mod);
+												return;
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}	
@@ -825,8 +892,8 @@ void InjectFaults(Module *mod, char *funcfile, char *pairfile)
     func_exit = FuncExitInfo(mod);	 	 	 
  	 	
     //Inject fault into each target function	 	 	 
-    //for (int i = 0; i < func_num; i++)	//************************************************change here, not inject now! 	 	 
-        //InjectSingleFault(mod, myfunc[i].func, myfunc[i].caller);	 	 	 
+    for (int i = 0; i < func_num; i++)	//************************************************change here, not inject now! 	 	 
+        InjectSingleFault(mod, myfunc[i].func, myfunc[i].line, myfunc[i].fault);	 	 	 
  	 	 	 
     //Instrument pairchecker	 	 	 
     for (Module::iterator it_MM = mod->begin(); it_MM != mod->end(); it_MM++)	 	 	 
@@ -867,8 +934,8 @@ void InjectFaults(Module *mod, char *funcfile, char *pairfile)
             {	 	 	 
                 Instruction *MyIn = &(*it_BB);	 	 	 
 //              outs() << *MyIn << "\n";	 	 	 
- 	 	 	 
-                unsigned OpCode = MyIn->getOpcode();	 	 	 
+ 	 	 	 	unsigned OpCode = MyIn->getOpcode();	
+ 	 	 	 	
                 if (OpCode == Instruction::Call)	 	 	 
                 {	 	 	 
                     //Get called function's handle	 	 	 
@@ -994,7 +1061,7 @@ void CreatePairRec(CallInst *mycall, char *name, Module *mod)
 }
 
 //Replace the value in the basicblock	<>	644	//Replace the value of each instruction in the function
-void ReplaceReturnValue(CallInst *ret, Value *change, BasicBlock *MyBB)	 	
+void ReplaceReturnValue(Instruction *ret, Value *change, BasicBlock *MyBB)	 	
 {	
     Instruction *first_inst = MyBB->getFirstNonPHI();	
     LoadInst *my_load = new LoadInst(change, "_load_temp", first_inst);	 	 	 
@@ -1012,21 +1079,23 @@ void ReplaceReturnValue(CallInst *ret, Value *change, BasicBlock *MyBB)
 }	 	
 	 	 	
 //Insert change function	 	
-void InsertChange(CallInst *mycall, Function *caller, Module *mod)	
+void InsertChange(Instruction *valInst, Function *caller, char *func, int line, int fault, Module *mod)	
 {  		 
     //insert a new temp data and pass function	 	 
-    AllocaInst* temp_data = new AllocaInst(mycall->getType(), "_temp_data", mycall);	 	 	 
-    CallInst *mypass = CreatePass(mycall, caller, mod);	 	 	 
+    //IntegerType *IntTy32 = IntegerType::get(mod->getContext(), 32);	 
+    //AllocaInst* temp_data = new AllocaInst(IntTy32, "_temp_data", valInst);	 	
+    AllocaInst* temp_data = new AllocaInst(valInst->getType(), "_temp_data", valInst);	 	 	 
+    CallInst *mypass = CreatePass(valInst, func, line, fault, mod);	  	 
  	 	 	 
     //insert a compare of pass function ret value	 	
-    Value *zero_int = ConstantInt::get(mycall->getContext(), APInt(32, 1, 10));	 	 	 
-    ICmpInst *mycmp = new ICmpInst(mycall, CmpInst::ICMP_EQ, mypass, zero_int, "_pass");	 	 	 
+    Value *zero_int = ConstantInt::get(valInst->getContext(), APInt(32, 1, 10));	 	 	 
+    ICmpInst *mycmp = new ICmpInst(valInst, CmpInst::ICMP_EQ, mypass, zero_int, "_pass");	 	 	 
  	 	 	 
     //split and generat new basicblocks	 	 	 
-    BasicBlock *my_bb = mycall->getParent();	 	 	 
-    BasicBlock *org_bb = my_bb->splitBasicBlock(mycall, "OrgBB");	 	 	 
-    BasicBlock *tar_bb = org_bb->splitBasicBlock(mycall->getNextNode(), "TarBB");	 	 	 
-    BasicBlock *new_bb = BasicBlock::Create(mycall->getContext(), "NewBB", caller, org_bb);	 	 	 
+    BasicBlock *my_bb = valInst->getParent();	 	 	 
+    BasicBlock *org_bb = my_bb->splitBasicBlock(valInst, "OrgBB");	 	 	 
+    BasicBlock *tar_bb = org_bb->splitBasicBlock(valInst->getNextNode(), "TarBB");	 	 	 
+    BasicBlock *new_bb = BasicBlock::Create(valInst->getContext(), "NewBB", caller, org_bb);	 	 	 
     IRBuilder <>builder(new_bb);	 	 	 
  	 	 	 
     //handle the branch in the basicblock of MyPassFunc	 	 	 
@@ -1034,26 +1103,19 @@ void InsertChange(CallInst *mycall, Function *caller, Module *mod)
     last_inst->eraseFromParent();	 	 	 
     BranchInst::Create(new_bb, org_bb, mycmp, my_bb);	 	 	 
  	 	 	 
-    //build the new basicblock	 	 	 
-    if (mycall->getType()->isIntegerTy(32) == true)	
-    {	 	
-        Value *fault_int = ConstantInt::get(mycall->getContext(), APInt(32, FAULT_INT));	 	
-        IRBuilder <>builder(new_bb);	
-        builder.CreateStore(fault_int, temp_data);	 
-    }	
-    else if (mycall->getType()->isPointerTy() == true)	
-    {	 	
-        PointerType *Pty = cast <PointerType> (mycall->getType());	
-        Value *fault_ptr = ConstantPointerNull::get(Pty);	
-        builder.CreateStore(fault_ptr, temp_data);	 	
-    }	
+    //build the new basicblock	 	 	 	 	
+	
+    Value *fault_int = ConstantInt::get(valInst->getContext(), APInt(64, fault));	 	//****************************此处若为32位系统，将64改成32
+    //IRBuilder <>builder(new_bb);	
+    builder.CreateStore(fault_int, temp_data);	 
+    
     BranchInst::Create(tar_bb, new_bb);	 	 
  	 	 	 
     //handle original function value in the OrgBB  	 	 	 
-    Instruction *next_inst = mycall->getNextNode();	 	 	 
-    new StoreInst(mycall, temp_data, next_inst);	 	 	 
+    Instruction *next_inst = valInst->getNextNode();	 	  
+    new StoreInst(valInst, temp_data, next_inst);	 	 	 
  	 	 	 
     //replace the return value with temp_data	 	 	 
-    ReplaceReturnValue(mycall, temp_data, tar_bb);	 	 	 
+    ReplaceReturnValue(valInst, temp_data, tar_bb);	 	 	 
 }
 
