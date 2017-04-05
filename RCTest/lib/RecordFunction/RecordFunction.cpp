@@ -1063,8 +1063,10 @@ void ReplaceReturnValue(Instruction *ret, Value *change, BasicBlock *MyBB)
 //Insert change function	 	
 void InsertChange(Instruction *valInst, Function *caller, char *func, int line, int fault, Module *mod)	
 {  		 
-    //insert a new temp data and pass function	  	
-    
+    //insert a new temp data and pass function	 	 
+    //IntegerType *IntTy32 = IntegerType::get(mod->getContext(), 32);	 
+    //AllocaInst* temp_data = new AllocaInst(IntTy32, "_temp_data", valInst);	 	
+
     AllocaInst* temp_data = new AllocaInst(valInst->getType(), "_temp_data", valInst);	 	 	 
     CallInst *mypass = CreatePass(valInst, func, line, fault, mod);	  	 
  	 	 	 
@@ -1107,10 +1109,9 @@ void InsertChange(Instruction *valInst, Function *caller, char *func, int line, 
  	 	 	 
     //handle original function value in the OrgBB  	 	 	 
     Instruction *next_inst = valInst->getNextNode();	 	  
-    new StoreInst(valInst, temp_data, next_inst);	 	 	 
- 	 	 	 
-    //replace the return value with temp_data	 
+    new StoreInst(valInst, temp_data, next_inst);	 
     	 	 
+    //replace the return value with temp_data	 
     ReplaceReturnValue(valInst, temp_data, tar_bb);	 
     
     /*outs() << *new_bb << "\n";
