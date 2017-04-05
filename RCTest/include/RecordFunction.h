@@ -26,6 +26,7 @@
 #include "llvm/Support/ToolOutputFile.h"
 #include "llvm/ValueSymbolTable.h"
 #include "llvm/Analysis/Verifier.h"
+#include "llvm/DebugInfo.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -67,7 +68,7 @@ void CreateResCheck(Function*MyFn, Module *mod);
 Function *PassFuncInfo(Module *mod);
 
 
-CallInst *CreatePass(CallInst *func, Function *caller, Module *mod);
+CallInst *CreatePass(Instruction *valInst, char *func, int line, int fault, Module *mod);
 
 //Declare the extern function of MyRecFunc
 Function* RecFuncInfo(Module *mod);
@@ -121,7 +122,8 @@ typedef struct MyPair
 typedef struct MyFunc 	 
 {	 	 	 
    	char func[100];	 
-   	char caller[100]; 
+   	int line;
+   	int fault; 
 }MyFunc;
 
 //Read pair function from the file
@@ -146,10 +148,10 @@ Function* PairInfo(Module *mod);
 void CreatePairRec(CallInst *mycall, char *name, Module *mod);
 
 //Replace the value in the basicblock
-void ReplaceReturnValue(CallInst *ret, Value *change, BasicBlock *MyBB);
+void ReplaceReturnValue(Instruction *ret, Value *change, BasicBlock *MyBB);
 
 //Insert change function
-void InsertChange(CallInst *mycall, Function *caller, Module *mod);
+void InsertChange(Instruction *valInst, Function *caller, char *func, int line, int fault, Module *mod);	
 
 //Declare the extern function of MyFuncEnter 
 Function *FuncEnterInfo(Module *module);	 	 	 
