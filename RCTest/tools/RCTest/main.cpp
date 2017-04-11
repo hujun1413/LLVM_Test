@@ -40,10 +40,10 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 	
-	outs() << "\nEHTest: Start handling " << argv[2] << "\n";
+	outs() << "\nRCTest: Start handling " << argv[2] << "\n";
 
 	if (opt == LLVM_RECORD)
-		LogFunction(mod); //当mycall返回指针或者整数时，在MyIn（调用语句）之后插入call void func_record(called_name, caller_name, ret_type)
+		GetTarget(mod, argv[3]); //将argv[3]中的比较语句前插入MyRecFunc
 	else if (opt == LLVM_ANALYZE)
 		AnalyzeSource(mod, argv[3], argv[4]); //找到argv[3]中返回值被检查的函数，写入argv[4]
 	else if (opt == LLVM_INJECT)

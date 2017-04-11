@@ -89,14 +89,15 @@ Function* PassFuncInfo(Module *mod)
 }
 
 //Declare the extern function of MyRecFunc	 	    void MyRecFunc(char* , char* , char* );
-Function* RecFuncInfo(Module *mod)	 	
+Function* RecTargetInfo(Module *mod)	 	
 {	 	
-	//Initialize paramater's type	 	
-	PointerType *PointerChar = PointerType::get(IntegerType::get(mod->getContext(), 8), 0);	 
-    std::vector<Type*>FuncTy_args;
-    FuncTy_args.push_back(PointerChar);
-    FuncTy_args.push_back(PointerChar);
-    FuncTy_args.push_back(PointerChar);
+	//Initialize paramater's type	 	 	 
+    PointerType *PointerChar = PointerType::get(IntegerType::get(mod->getContext(), 8), 0);	 	 
+    IntegerType *IntTy32 = IntegerType::get(mod->getContext(), 32);	 	 	 
+    std::vector<Type*>FuncTy_args;	 	 	 
+    FuncTy_args.push_back(PointerChar);	 	 	 
+    FuncTy_args.push_back(IntTy32);	 
+    FuncTy_args.push_back(IntTy32);	 
     FunctionType* FuncTy = FunctionType::get(Type::getVoidTy(mod->getContext()),
 	                                            FuncTy_args, false);	 	
  	 	
@@ -306,50 +307,58 @@ CallInst *CreatePass(Instruction *valInst, char *func, int line, int fault, Modu
     return mycall;	 	 	 
 }
 
-//Record functions returning pointers or integers
-//当CallInst *func返回指针或者整数时，在MyIn之前插入call void func_record(called_name, caller_name, ret_type)
-void CreateRecFunc(CallInst *func, Function *caller, Instruction *MyIn, Module *mod)
+void CreateRecTarget(ICmpInst *mycmp, char *func, int line, int fault, Module *mod)
 {
-	Type *retType = func->getType();
-	if (retType->isIntegerTy(32) == true || retType->isPointerTy() == true)
-	{
-		//Get type name
-		string str("");
-		raw_string_ostream stream(str);
-		stream << *retType;
-		Constant *ret_type = CreateWords(mod, stream.str());
-
-		//Get function name
-		Function *myfunc = func->getCalledFunction();
-		if (myfunc->getName().find("llvm") != string::npos)
-			return;
-		Constant *func_name = CreateWords(mod, myfunc->getName().str());
-
-		//Get caller-function name
-		Constant *caller_name = CreateWords(mod, caller->getName().str());
-
-		//Prepare parameters for MyRecFunc
-		std::vector<Value*> para;
-		para.push_back(func_name);
-		para.push_back(caller_name);
-		para.push_back(ret_type);
-
-		//Call MyRecFunc function
-		CallInst *mycall;
-		mycall = CallInst::Create(func_record, para, "", MyIn);
-		mycall->setCallingConv(CallingConv::C);
-		mycall->setTailCall(false);	
-	}
+	string str(func);
+    Constant *func_name = CreateWords(mod, str);	
+    ConstantInt* const_line = ConstantInt::get(mod->getContext(), APInt(32, line)); 	
+    ConstantInt* const_fault = ConstantInt::get(mod->getContext(), APInt(32, fault)); 	 	 
+ 	 	 	 
+    //Prepare parameters for MyPassFunc	 	 	 
+    std::vector<Value*> para;	 	 	 
+    para.push_back(func_name);	 	 	 
+    para.push_back(const_line);	
+    para.push_back(const_fault);	 	 	 
+ 	 	 	 
+    //Call MyPassFunc function	 	 	 
+    CallInst *mycall;	 	 	 
+    mycall = CallInst::Create(func_record, para, "", mycmp);	 	 	 
+    mycall->setCallingConv(CallingConv::C);	 	 	 
+    mycall->setTailCall(false);	 	 	 
+    //return mycall;	 	 	 
 }
 
 //Make function information log
-void LogFunction(Module *mod)
-{
-	func_record = RecFuncInfo(mod);
 
+void GetTarget(Module *mod, char *infile)
+{
+	func_record = RecTargetInfo(mod);
+	char func[100];
+	int line, fault;
+	FILE *fp_in;
+
+	fp_in = fopen(infile, "r");
+
+	if (!fp_in)
+	{
+		printf("RCTest: Fail to open file!\n");
+		return;
+	}
+
+	while (fscanf(fp_in, "%s%d%d", func, &line, &fault) != EOF)
+	{
+		InsertRecTarget(func, line, fault, mod);
+	}
+	fclose(fp_in);
+}
+
+void InsertRecTarget(char* func, int line, int fault, Module *mod)
+{
 	for (Module::iterator it_MM = mod->begin(); it_MM != mod->end(); it_MM++)
 	{
 		Function *MyFn = &(*it_MM);
+		char caller_name[100];
+		strcpy(caller_name, MyFn->getName().str().c_str());
 
 		//Leave alone inline callers 
 		AttrListPtr attrList = MyFn->getAttributes();
@@ -367,30 +376,34 @@ void LogFunction(Module *mod)
 		if (attr_flag == true)
 			continue;
 
+		if (strcmp(caller_name, func))	 
+	        continue;
+
 		for (Function::iterator it_Fn = MyFn->begin(); it_Fn != MyFn->end(); it_Fn++)
 		{
 			BasicBlock *MyBB = &(*it_Fn);
 			for (BasicBlock::iterator it_BB = MyBB->begin(); it_BB != MyBB->end(); it_BB++)
 			{
 				Instruction *MyIn = &(*it_BB);
-				unsigned OpCode = MyIn->getOpcode();
-				if (OpCode == Instruction::Call)
-				{
-					//Get called function's handle
-					CallInst *mycall = cast <CallInst> (MyIn);
-					Function *myfunc = mycall->getCalledFunction();
-					
-					//Avoid function pointer and asm call
-					if (myfunc == NULL)	
-						continue;
+				//outs() << *MyIn << "\n";
 
-					//Handle each function call
-					it_BB ++;
-					Instruction *MyTemp = &(*it_BB);	
-					CreateRecFunc(mycall, MyFn, MyTemp, mod);  //当mycall返回指针或者整数时，在MyIn（调用语句）之后插入call void func_record(called_name, caller_name, ret_type)
-					it_BB --;
+				unsigned OpCode = MyIn->getOpcode();
+				if(OpCode == Instruction::ICmp)    //是if判断
+				{
+					if (MDNode *N = MyIn->getMetadata("dbg")) 
+					{
+						DILocation Loc(N);//DILocation is in DebugInfo.h
+						int Line = Loc.getLineNumber();
+						if(Line == line)    //在某行
+						{
+							ICmpInst *mycmp = cast <ICmpInst> (MyIn);
+							CreateRecTarget(mycmp, func, line, fault, mod); 	
+							printf("Insert Rectarget done!\n");
+							return; 
+						}
+					}
 				}
-			}	
+			}
 		}
 	}
 }
@@ -794,7 +807,7 @@ void InjectSingleFault(Module *mod, char *func, int line, int fault) {
 					if (MDNode *N = MyIn->getMetadata("dbg")) 
 					{
 						DILocation Loc(N);//DILocation is in DebugInfo.h
-						unsigned Line = Loc.getLineNumber();
+						int Line = Loc.getLineNumber();
 						if(Line == line)    //在某行
 						{
 							ICmpInst *mycmp = cast <ICmpInst> (MyIn);	 	 
@@ -813,7 +826,7 @@ void InjectSingleFault(Module *mod, char *func, int line, int fault) {
 							{
 								continue;
 							}
-							if (Instruction* inst = dyn_cast<Instruction>(mycmp->getOperand(0))) 
+							if (Instruction* inst = dyn_cast<Instruction>(mycmp->getOperand(const_para))) 
 							{
 								unsigned OpCode = inst->getOpcode();
 								if(OpCode == Instruction::And)

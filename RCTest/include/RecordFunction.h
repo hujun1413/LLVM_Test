@@ -65,7 +65,7 @@ Function *ResCheckInfo(Module *mod);
 void CreateResCheck(Function*MyFn, Module *mod);
 
 
-Function *PassFuncInfo(Module *mod);
+Function *PassTargetInfo(Module *mod);
 
 
 CallInst *CreatePass(Instruction *valInst, char *func, int line, int fault, Module *mod);
@@ -73,11 +73,8 @@ CallInst *CreatePass(Instruction *valInst, char *func, int line, int fault, Modu
 //Declare the extern function of MyRecFunc
 Function* RecFuncInfo(Module *mod);
 
-//Insert record function
-void CreateReFunc(CallInst *func, Function *caller, Instruction *MyIn, Module *mod);
+void CreateRecTarget(ICmpInst mycmp, char *func, int line, int fault, Module *mod);
 
-//Record function information
-void LogFunction(Module* mod);
 
 /*********************************************/
 typedef struct MyValue
@@ -161,4 +158,8 @@ Function *FuncExitInfo(Module *module);
  	 	 	 
 //Insert function enter and exit log	 	 	 
 void CreateFuncEnterExit(Function *MyFn, Module *mod);
+
+void GetTarget(Module *mod, char *infile);
+
+void InsertRecTarget(char* func, int line, int fault, Module *mod);
 
