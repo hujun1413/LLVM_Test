@@ -1,8 +1,0 @@
-Usage1: Instrument the code to record all called functions whose return value are pointers or integers(32)
-Command1: #./EHTest -r bytecode
-
-Usage2: Analyze the code and find whether the given function's return value is checked after it is called in the code
-Command2: #./EHTest -a bytecode infile outfile
-
-Usage3: Inject a fault into the return value of the target function
-Command3: #./EHTest -f bytecode func caller pairfile
