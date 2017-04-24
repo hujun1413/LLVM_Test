@@ -10,7 +10,7 @@ LLVM_SRC_ROOT = /home/disk1/llvm-3.2
 LLVM_OBJ_ROOT = /home/disk1/llvm-3.2
 
 # Set the directory root of this project's source files
-PROJ_SRC_ROOT := $(subst //,/,/home/disk1/llvm-3.2/projects/EHTest)
+PROJ_SRC_ROOT := $(subst //,/,/home/disk1/llvm-3.2/projects/RCInstru)
 
 # Set the root directory of this project's object files
 PROJ_OBJ_ROOT := $(subst //,/,@abs_top_objdir@)
