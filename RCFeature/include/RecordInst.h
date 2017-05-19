@@ -30,11 +30,23 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <set>
+#include <string>
 
 using namespace llvm;
 using namespace std;
 
 
-#define LOGFILE "/tmp/CmpResult.txt"
+#define RESULTFILE "/tmp/CmpResult.txt"
+#define FUNCFILE "/tmp/func.txt"
 
 void FindCmp(Module* mod);
+void readFuncFile();
+
+
+
+
+
+
+
+

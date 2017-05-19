@@ -1,12 +1,41 @@
 #include "RecordInst.h"
 
+set<string> funcSet;
+string tmp;
+char str[100];
+	
+void readFuncFile()
+{
+	FILE *fp_read;
+	fp_read = fopen(FUNCFILE, "r");
+	if (!fp_read)
+	{
+		outs() << "Fail to open " << RESULTFILE << "!\n";
+		return;
+	}
+	
+	while(fscanf(fp_read, "%s", str) != EOF)
+	{
+		tmp = str;
+		if(funcSet.insert(tmp).second)
+		{
+			//outs() << "jaha\n";
+		}
+	}
+	
+	/*set<string>::iterator it; //定义前向迭代器
+	//中序遍历集合中的所有元素
+	for(it=funcSet.begin();it!=funcSet.end();it++)    //遍历
+		cout<<*it<<endl;*/
+}
+
 void FindCmp(Module* mod)
 {
 	FILE *fp_write;
-	fp_write = fopen(LOGFILE, "a");
+	fp_write = fopen(RESULTFILE, "a");
 	if (!fp_write)
 	{
-		outs() << "Fail to open " << LOGFILE << "!\n";
+		outs() << "Fail to open " << RESULTFILE << "!\n";
 		return;
 	}
 	
@@ -31,7 +60,13 @@ void FindCmp(Module* mod)
 			continue;*/
 		
 		//outs() << MyFn->getName().str() << "\n";
-
+		tmp = MyFn->getName().str();
+		set<string>::iterator it;
+		if((it = funcSet.find(tmp)) == funcSet.end())   //can not find func name
+		{
+			continue;
+		}
+		
 		for (Function::iterator it_Fn = MyFn->begin(); it_Fn != MyFn->end(); it_Fn++)
 		{
 			BasicBlock *MyBB = &(*it_Fn);

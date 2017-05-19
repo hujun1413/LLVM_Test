@@ -29,6 +29,7 @@ int main(int argc, char **argv)
 	
 	//run your pass
 	outs() << "\nGetCmp: Start handling " << argv[1] << "\n";
+	readFuncFile();
 	FindCmp(mod);
 	outs() << "\nGetCmp: Finish handling " << argv[1] << "\n";
 	
