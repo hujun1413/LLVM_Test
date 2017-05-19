@@ -53,19 +53,7 @@ using namespace std;
 Constant *CreateWords(Module *mod, string str);
 
 
-Function *COuntChangeInfo(Module *mod);
-
-
-void CreatCountChange(Function  *MyFn, Module *mod);
-
-
-Function *ResCheckInfo(Module *mod);
-
-
-void CreateResCheck(Function*MyFn, Module *mod);
-
-
-Function *PassTargetInfo(Module *mod);
+Function *PassFuncInfo(Module *mod);
 
 
 CallInst *CreatePass(Instruction *valInst, char *func, int line, int fault, Module *mod);
@@ -73,39 +61,6 @@ CallInst *CreatePass(Instruction *valInst, char *func, int line, int fault, Modu
 //Declare the extern function of MyRecFunc
 Function* RecFuncInfo(Module *mod);
 
-void CreateRecTarget(ICmpInst mycmp, char *func, int line, int fault, Module *mod);
-
-
-/*********************************************/
-typedef struct MyValue
-{
-	Value *real;	//real value
-	Value *temp;	//temporary value in llvm bytecode
-	Value *struct_host;		//record the host for structure
-	int struct_offset;		//record the offset for structure
-	MyValue *store_from;	//which value store to this value
-}MyValue;
-
-//Analyze the code to find checks
-//infile -- contain functions to be analyzed
-//outfile -- contain functions whose return values are checked
-void AnalyzeSource(Module *mod, char *infile, char *outfile);
-
-//Locate the function 
-bool FindFunction(Module *mod, char *name, char *caller);
-
-//Find value in the value table
-int FindValue(Value *swap, int opt);
-
-//Find struct value in the value table
-int FindStructValue(Value *struct_host, int struct_offset);
-
-//Create a new value structure in data analysis
-void CreateNewValue(Value *real, Value *temp, Value *struct_host,
-                    int struct_offset, MyValue *store_from);
-
-//Check whether the return value is checked after the function call
-bool FindCheck(CallInst *mycall, BasicBlock *MyBB);
 
 /*********************************************/
 typedef struct MyPair
@@ -126,13 +81,11 @@ typedef struct MyFunc
 //Read pair function from the file
 bool ReadPairFile(char *file);
 
-//Read target function from the file	<>	 	 
+//Read target function from the file		 	 
 bool ReadFuncFile(char *file);	 	 	 
+ 	 
  	 	 	 
-//Read entry and exit function from the file	 	 	 
-bool ReadEntryExitFile(char *file);	 	 	 
- 	 	 	 
-//Inject a fault into a single target function	 	105	//Inject fault into functions' return values
+//Inject a fault into a single target function	 
 void InjectSingleFault(Module *mod, char *name, char *caller);	 	 	 
  	 	 	 
 //Inject faults into the code	 	 	 
@@ -159,7 +112,9 @@ Function *FuncExitInfo(Module *module);
 //Insert function enter and exit log	 	 	 
 void CreateFuncEnterExit(Function *MyFn, Module *mod);
 
-void GetTarget(Module *mod, char *infile);
+void LogFunction(Module *mod);
 
-void InsertRecTarget(char* func, int line, int fault, Module *mod);
+void CreateRecFunc(Function *caller, Instruction *MyIn, Module *mod);
+
+void AnalyzeSource(Module *mod, char *infile, char *outfile);
 

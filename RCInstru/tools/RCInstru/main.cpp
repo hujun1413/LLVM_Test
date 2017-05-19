@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 	outs() << "\nRCTest: Start handling " << argv[2] << "\n";
 
 	if (opt == LLVM_RECORD)
-		GetTarget(mod, argv[3]); //将argv[3]中的比较语句前插入MyRecFunc
+		LogFunction(mod); //insert RecFunc before every function
 	else if (opt == LLVM_ANALYZE)
 		AnalyzeSource(mod, argv[3], argv[4]); //找到argv[3]中返回值被检查的函数，写入argv[4]
 	else if (opt == LLVM_INJECT)
